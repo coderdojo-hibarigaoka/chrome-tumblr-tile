@@ -20,6 +20,7 @@ tumblrTile || (function() {
         var config    = configStr ? JSON.parse(configStr) : {};
 
         var defaultConfig = {
+			apiKey : 'Ckj5qmv4fWharnnIbeLZ8HfH5QIJRgqEZr74ZNFBs0BwxuNqVz',
             hostname : "ayaka-sasaki.tumblr.com",
             baseWidth: 250,
             margin   : 10
@@ -47,6 +48,16 @@ tumblrTile || (function() {
 
         self.getTumblrPhotos(param, function(div) {
             $("#container").append($(div));
+
+			$('img',$('#container .item:last-child')).css({
+				'width':self.config.baseWidth,
+				'height':$('img',$(div)).attr('height') * self.config.baseWidth / $('img',$(div)).attr('width')
+			});
+
+			$('#container .item:last-child').css({
+				'margin':(self.config.margin / 2),
+				'width':self.config.baseWidth
+			});
         }).then(function() {
 
             param.offset += param.limit;
@@ -71,6 +82,7 @@ tumblrTile || (function() {
                         param.offset += param.limit;
 
                         var $divs = $(divs);
+
                         $("#container").append($divs).masonry( 'appended', $divs, false );
                     }).then(function() {
                         isAccessTumblr = false;
@@ -82,7 +94,6 @@ tumblrTile || (function() {
     }
 
     function getTumblrPhotos(param, func) {
-
         var self = this;
         var d = $.Deferred();
         param.api_key = self.config.apiKey;
