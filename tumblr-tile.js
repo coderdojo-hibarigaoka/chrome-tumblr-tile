@@ -46,25 +46,45 @@ tumblrTile || (function() {
 
         var isAccessTumblr = false;
 
+		var items = new Array;
+		var i = 0;
+
         self.getTumblrPhotos(param, function(div) {
-            $("#container").append($(div));
 
-			$('img',$('#container .item:last-child')).css({
-				'width':self.config.baseWidth,
-				'height':$('img',$(div)).attr('height') * self.config.baseWidth / $('img',$(div)).attr('width')
-			});
+			items[i] = div;
+			i++;
 
-			$('#container .item:last-child').css({
-				'margin':(self.config.margin / 2),
-				'width':self.config.baseWidth
-			});
         }).then(function() {
 
             param.offset += param.limit;
 
+			items = shuffle(items);
+
+			for(i = 0 ; i <= items.length ; i++){
+				$("#container").append($(items[i]));
+			}
+
+			$('.item').each(function(){
+				$('img',this).css({
+					'width':self.config.baseWidth,
+					'height':$('img',this).attr('height') * self.config.baseWidth / $('img',this).attr('width')
+				});
+
+				$(this).css({
+					'margin':(self.config.margin / 2),
+					'width':self.config.baseWidth,
+					'box-shadow':'1px 1px 3px rgba(0,0,0,.1)'
+				});
+			});
+
+			$('#container').css({
+				'margin-top':(self.config.margin / 2),
+				'margin-bottom':(self.config.margin / 2)
+			});
+
             $("#container").masonry({
                 itemSelector: ".item",
-                columnWidth: self.config.baseWidth + self.config.margin,
+                columnWidth: self.config.baseWidth + self.config.margin + 2,
                 isFitWidth: true,
                 isAnimated: true
             });
@@ -137,4 +157,9 @@ tumblrTile || (function() {
         return d;
     }
 
+	//シャッフル関数
+	var shuffle = function(a){
+		for(var j, x, i = a.length; i; j = parseInt(Math.random() * i), x = a[--i], a[i] = a[j], a[j] = x);
+		return a;
+	};
 })();
