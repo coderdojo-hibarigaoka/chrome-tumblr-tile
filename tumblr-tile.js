@@ -67,7 +67,7 @@ tumblrTile || (function() {
 			$('.item').each(function(){
 				$('img',this).css({
 					'width':self.config.baseWidth,
-					'height':$('img',this).attr('height') * self.config.baseWidth / $('img',this).attr('width')
+					'height':$('img',this).attr('height') * (self.config.baseWidth / $('img',this).attr('width'))
 				});
 
 				$(this).css({
@@ -93,17 +93,35 @@ tumblrTile || (function() {
                 if ( isAccessTumblr == false && $(window).scrollTop() + $(window).height() >= $(document).height() ) {
 
                     isAccessTumblr = true;
-                    var divs = "";
+                    var items = "";
 
                     self.getTumblrPhotos(param, function(div) {
-                        divs += div;
+                       items += div;
+
                     }).then(function() {
 
                         param.offset += param.limit;
 
-                        var $divs = $(divs);
+                        var $items = $(items);
 
-                        $("#container").append($divs).masonry( 'appended', $divs, false );
+						if($items.length !== 0){
+							for(i = 0 ; i < $items.length ; i++){
+								$($items.get(i)).css({
+									'margin':(self.config.margin / 2),
+									'width':self.config.baseWidth,
+									'box-shadow':'1px 1px 3px rgba(0,0,0,.1)'
+								});
+
+								var $img = $($items.get(i).childNodes);
+
+								$img.css({
+									'width':self.config.baseWidth,
+									'height':$img.attr('height') * (self.config.baseWidth / $img.attr('width'))
+								});
+							}
+						}
+
+                        $("#container").append($items).masonry( 'appended', $items, false );
                     }).then(function() {
                         isAccessTumblr = false;
                     });
@@ -147,6 +165,7 @@ tumblrTile || (function() {
 
                     var altSize = val.photos[0].alt_sizes[diffSizes[0].index]
                     var div = '<div class="item"><img src="' + altSize.url+ '" width="' + altSize.width + '" height="' + altSize.height + '" /></div>';
+                    //var div = '<div class="item"><img src="' + altSize.url+ '" /></div>';
                     func(div);
                 });
 
