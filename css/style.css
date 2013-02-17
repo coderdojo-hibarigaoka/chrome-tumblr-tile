@@ -1,0 +1,14 @@
+@charset="UTF-8";
+
+body {
+	margin:0;
+	background:#ffe9f2;
+}
+
+#container {
+	margin:0 auto;
+}
+
+img {
+	vertical-align:top;
+}
